@@ -7,12 +7,12 @@ sensors for power and gas consumption.
 Install the files
 ===
 
-On your Home Assistant instance, go to \<config directory\>/custom_components. Create a folder name Climate
-and a folder named Sensor, if they don't already exist. Now copy the files:
+On your Home Assistant instance, go to \<config directory\>/custom_components. Create a folder name climate
+and a folder named sensor, if they don't already exist. Now copy the files:
 ```
 toon.py ---> <config directory>/custom_components
-Sensor/toon.py ---> <config directory>/custom_components/Sensor
-Climate/toon.py ---> <config directory>/custom_components/Climate
+Sensor/toon.py ---> <config directory>/custom_components/sensor
+Climate/toon.py ---> <config directory>/custom_components/climate
 ```
 Configuration
 ===
