@@ -3,7 +3,6 @@ Toon van Eneco Thermostat Support.
 This provides a component for the rebranded Quby thermostat as provided by
 Eneco.
 """
-import logging
 
 from homeassistant.components.climate import (
     ClimateDevice, ATTR_TEMPERATURE)
@@ -16,10 +15,12 @@ STATE_AWAY = "Away"
 STATE_SLEEP = "Sleep"
 STATE_MANUAL = "Manual"
 
+
 def setup_platform(hass, config, add_devices, discovery_info=None):
     """Setup thermostat."""
     # Add toon
     add_devices((ThermostatDevice(hass), ), True)
+
 
 class ThermostatDevice(ClimateDevice):
     """Interface class for the toon module and HA."""
@@ -57,7 +58,7 @@ class ThermostatDevice(ClimateDevice):
         """Return current operation i.e. comfort, home, away."""
         state = self.thermos.get_data("state")
         return state
-    
+
     @property
     def operation_list(self):
         """List of available operation modes."""
@@ -78,7 +79,6 @@ class ThermostatDevice(ClimateDevice):
         temp = kwargs.get(ATTR_TEMPERATURE)
         self.thermos.set_temp(temp)
 
-
     def set_operation_mode(self, operation_mode):
         """Set new operation mode."""
         self.thermos.set_state(operation_mode)
@@ -86,4 +86,3 @@ class ThermostatDevice(ClimateDevice):
     def update(self):
         """Update local state."""
         self.thermos.update()
-

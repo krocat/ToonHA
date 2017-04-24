@@ -12,7 +12,7 @@ from homeassistant.helpers.discovery import load_platform
 import homeassistant.helpers.config_validation as cv
 
 # Home Assistant depends on 3rd party packages for API specific code.
-REQUIREMENTS = ['toonlib==0.1.3']
+REQUIREMENTS = ['toonlib==0.1.4']
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -30,7 +30,8 @@ CONFIG_SCHEMA = vol.Schema({
 
 def setup(hass, config):
     """Setup toon."""
-    hass.data[TOON_HANDLE] = toonDataStore(config['toon']['username'], config['toon']['password'])
+    hass.data[TOON_HANDLE] = ToonDataStore(config['toon']['username'],
+                                           config['toon']['password'])
 
     # Load Climate (for Thermostat)
     load_platform(hass, 'climate', DOMAIN)
@@ -41,7 +42,8 @@ def setup(hass, config):
     # Initialization successfull
     return True
 
-class toonDataStore:
+
+class ToonDataStore:
     """An object to store the toon data."""
 
     def __init__(self, username, password):
@@ -56,17 +58,22 @@ class toonDataStore:
 
     def update(self):
         """Update toon data."""
-        self.data["power"] = self.toon.power.value 
-        self.data["today"] = round((float(self.toon.power.daily_usage) + float(self.toon.power.daily_usage_low)) / 1000, 2)
+        self.data["power_current"] = self.toon.power.value
+        self.data["power_today"] = round(
+            (float(self.toon.power.daily_usage) +
+             float(self.toon.power.daily_usage_low)) / 1000, 2)
         self.data["temp"] = self.toon.temperature
-        
-        if self.toon.thermostat_state is not None:
+
+        if self.toon.thermostat_state:
             self.data["state"] = self.toon.thermostat_state.name
         else:
             self.data["state"] = "Manual"
 
-        self.data["setpoint"] = float(self.toon.thermostat_info.current_set_point) / 100
-        self.data["gas"] = round(float(self.toon.gas.daily_usage) / 1000, 2)
+        self.data["setpoint"] = float(
+            self.toon.thermostat_info.current_set_point) / 100
+        self.data["gas_current"] = self.toon.gas.value
+        self.data["gas_today"] = round(float(self.toon.gas.daily_usage) /
+                                       1000, 2)
 
     def set_state(self, state):
         self.toon.thermostat_state = state
@@ -75,7 +82,7 @@ class toonDataStore:
     def set_temp(self, temp):
         self.toon.thermostat = temp
         self.update()
-        
+
     def get_data(self, data_id):
         """Get the cached data."""
         data = {'error': 'no data'}
@@ -84,5 +91,3 @@ class toonDataStore:
             data = self.data[data_id]
 
         return data
-
-
