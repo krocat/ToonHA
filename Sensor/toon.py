@@ -12,12 +12,14 @@ import custom_components.toon as toon_main
 def setup_platform(hass, config, add_devices, discovery_info=None):
     """Setup sensors."""
     add_devices([
-        toonSensor(hass, 'Gas', 'M3'),
-        toonSensor(hass, 'Power', 'Watt'),
-        toonSensor(hass, 'Today', 'kWh'),
+        ToonSensor(hass, 'Gas_current', 'CM3'),
+        ToonSensor(hass, 'Gas_today', 'M3'),
+        ToonSensor(hass, 'Power_current', 'Watt'),
+        ToonSensor(hass, 'Power_today', 'kWh')
     ])
 
-class toonSensor(Entity):
+
+class ToonSensor(Entity):
     """Representation of a sensor."""
 
     def __init__(self, hass, name, unit_of_measurement):
