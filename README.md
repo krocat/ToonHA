@@ -1,6 +1,6 @@
 # Toon Home Assistant component
 
-The toon component platform can be used to control your Toon thermostat. It uses the Toon library by
+The toon component platform can be used to control your Toon thermostat. It uses the toonlib library
 by Costas Tyfoxylos (https://github.com/costastf/toonlib). This component adds a climate device for
 your Toon thermostat and sensors for power and gas consumption..
 
