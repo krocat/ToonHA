@@ -56,17 +56,7 @@ class ThermostatDevice(ClimateDevice):
     def current_operation(self):
         """Return current operation i.e. comfort, home, away."""
         state = self.thermos.get_data("state")
-
-        if state == "0":
-            return STATE_COMFORT
-        elif state == "1":
-            return  STATE_HOME
-        elif state == "2":
-            return  STATE_SLEEP
-        elif state == "3":
-            return  STATE_AWAY
-        else:
-            return  STATE_MANUAL
+        return state
     
     @property
     def operation_list(self):
@@ -86,36 +76,12 @@ class ThermostatDevice(ClimateDevice):
     def set_temperature(self, **kwargs):
         """Change the setpoint of the thermostat."""
         temp = kwargs.get(ATTR_TEMPERATURE)
-        self.thermos.toon.login()
-        self.thermos.toon.refresh_toon_state()
-        result = self.thermos.toon.set_thermostat(float(temp))
-        self.thermos.toon.logout()
-        self.thermos.set_data("setpoint", float(temp))
-        self.thermos.set_data("state", "99")
+        self.thermos.set_temp(temp)
 
 
     def set_operation_mode(self, operation_mode):
         """Set new operation mode."""
-        
-        if operation_mode == STATE_COMFORT:
-            program = "0"
-        elif operation_mode == STATE_HOME:
-            program = "1"
-        elif operation_mode == STATE_SLEEP:
-            program = "2"
-        elif operation_mode == STATE_AWAY:
-            program = "3"
-        else:
-            program = None
-        
-        if program is None:
-            return False
-
-        self.thermos.toon.login()
-        self.thermos.toon.refresh_toon_state()
-        result = self.thermos.toon.set_program_state(int(program))
-        self.thermos.toon.logout()
-        self.thermos.set_data("state", program)
+        self.thermos.set_state(operation_mode)
 
     def update(self):
         """Update local state."""

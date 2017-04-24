@@ -5,25 +5,19 @@ Eneco.
 """
 import logging
 import voluptuous as vol
-from datetime import timedelta
 
 # Import the device class from the component that you want to support
 from homeassistant.const import (CONF_USERNAME, CONF_PASSWORD)
 from homeassistant.helpers.discovery import load_platform
-from homeassistant.util import Throttle
 import homeassistant.helpers.config_validation as cv
 
 # Home Assistant depends on 3rd party packages for API specific code.
-REQUIREMENTS = ['https://github.com/krocat/toon/archive/'
-                'v1.0.4.zip#'
-                'toon==1.0.4']
+REQUIREMENTS = ['toonlib==0.1.2']
 
 _LOGGER = logging.getLogger(__name__)
 
 DOMAIN = "toon"
 TOON_HANDLE = "toon_handle"
-
-MIN_TIME_BETWEEN_UPDATES = timedelta(minutes=2)
 
 # Validation of the user's configuration
 CONFIG_SCHEMA = vol.Schema({
@@ -52,37 +46,36 @@ class toonDataStore:
 
     def __init__(self, username, password):
         """Initialize toon."""
-        from toon.Toon import Toon
+        from toonlib import Toon
 
         # Creating the class
         toon = Toon(username, password)
-        toon.set_maxretries(5)
 
         self.toon = toon
         self.data = {}
 
-
-    @Throttle(MIN_TIME_BETWEEN_UPDATES)
     def update(self):
         """Update toon data."""
-        result = self.toon.login()
-        thermostat = self.toon.retrieve_toon_state()
-        self.toon.logout()
+        self.data["power"] = self.toon.power.value 
+        self.data["today"] = round((float(self.toon.power.daily_usage) + float(self.toon.power.daily_usage_low)) / 1000, 2)
+        self.data["temp"] = self.toon.temperature
+        
+        if self.toon.thermostat_state is not None:
+            self.data["state"] = self.toon.thermostat_state.name
+        else:
+            self.data["state"] = "Manual"
 
-        if 'powerUsage' in thermostat:
-            self.data["power"] = thermostat["powerUsage"]["value"]
-            if 'dayLowUsage' in thermostat["powerUsage"]:
-                self.data["today"] = round((float(thermostat["powerUsage"]["dayUsage"]) / 1000) + (float(thermostat["powerUsage"]["dayLowUsage"]) / 1000), 2)
-            else:
-                self.data["today"] = round(float(thermostat["powerUsage"]["dayUsage"]) / 1000, 2)
+        self.data["setpoint"] = float(self.toon.thermostat_info.current_set_point) / 100
+        self.data["gas"] = round(float(self.toon.gas.daily_usage) / 1000, 2)
 
-        if 'thermostatInfo' in thermostat:
-            self.data["temp"] = float(thermostat["thermostatInfo"]["currentTemp"]) / 100
-            self.data["state"] = str(thermostat["thermostatInfo"]["activeState"])
-            self.data["setpoint"] = float(thermostat["thermostatInfo"]["currentSetpoint"]) / 100
-        if 'gasUsage' in thermostat:
-            self.data["gas"] = round(float(thermostat["gasUsage"]["dayUsage"]) / 1000, 2)
+    def set_state(self, state):
+        self.toon.thermostat_state = state
+        self.update()
 
+    def set_temp(self, temp):
+        self.toon.thermostat = temp
+        self.update()
+        
     def get_data(self, data_id):
         """Get the cached data."""
         data = {'error': 'no data'}
@@ -92,9 +85,4 @@ class toonDataStore:
 
         return data
 
-    def set_data(self, data_id, value):
-        """Set the cached data after update."""
-        
-        if data_id in self.data:
-            self.data[data_id] = value
 
