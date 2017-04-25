@@ -30,6 +30,7 @@ CONFIG_SCHEMA = vol.Schema({
 
 def setup(hass, config):
     """Setup toon."""
+    plug = None
     hass.data[TOON_HANDLE] = ToonDataStore(config['toon']['username'],
                                            config['toon']['password'])
 
@@ -40,7 +41,7 @@ def setup(hass, config):
     load_platform(hass, 'sensor', DOMAIN)
 
     # Load Switch (for Slimme Stekkers)
-    if plug in hass.data[TOON_HANDLE].smartplugs:
+    if plug in hass.data[TOON_HANDLE].toon.smartplugs:
         load_platform(hass, 'switch', DOMAIN)
 
     # Initialization successfull
