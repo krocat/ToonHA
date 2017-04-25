@@ -39,6 +39,10 @@ def setup(hass, config):
     # Load Sensor (for Gas and Power)
     load_platform(hass, 'sensor', DOMAIN)
 
+    # Load Switch (for Slimme Stekkers)
+    if plug in hass.data[TOON_HANDLE].smartplugs:
+        load_platform(hass, 'switch', DOMAIN)
+
     # Initialization successfull
     return True
 
@@ -75,6 +79,12 @@ class ToonDataStore:
         self.data["gas_today"] = round(float(self.toon.gas.daily_usage) /
                                        1000, 2)
 
+        for plug in self.toon.smartplugs:
+            self.data[plug.name]["current_power"] = plug.current_usage
+            self.data[plug.name]["daily_usage"] = plug.daily_usage
+            self.data[plug.name]["current_state"] = plug.current_state
+            self.data[plug.name]["is_connected"] = plug.is_connected
+
     def set_state(self, state):
         self.toon.thermostat_state = state
         self.update()
@@ -83,11 +93,16 @@ class ToonDataStore:
         self.toon.thermostat = temp
         self.update()
 
-    def get_data(self, data_id):
+    def get_data(self, data_id, plug=""):
         """Get the cached data."""
         data = {'error': 'no data'}
 
-        if data_id in self.data:
-            data = self.data[data_id]
+        if plug:
+            smartplug = self.toon.get_smartplug_by_name(plug)
+            if data_id in self.data[smartplug.name]:
+                data = self.data[smartplug.name][data_id]
+        else:
+            if data_id in self.data:
+                data = self.data[data_id]
 
         return data

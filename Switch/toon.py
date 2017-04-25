@@ -28,10 +28,7 @@ class EnecoSmartPlug(SwitchDevice):
         self.smartplug = plug
         self._unique_id = self.smartplug.device_uuid
         self._name = self.smartplug.name
-        self._current_power_w = self.smartplug.current_usage
-        self.today_energy_kwh = self.smartplug.daily_usage
-        self._is_on = self.smartplug.current_state
-        self._available = self.smartplug.is_connected
+        self.toon = hass.data[toon_main.TOON_HANDLE]
 
     @property
     def should_poll(self):
@@ -51,22 +48,22 @@ class EnecoSmartPlug(SwitchDevice):
     @property
     def current_power_w(self):
         """Current power usage in W."""
-        return self._current_power_w
+        return self.toon.getData("current_power_w", self._name)
 
     @property
     def today_energy_kwh(self):
         """Today total energy usage in kWh."""
-        return self.today_energy_kwh
+        return self.toon.getData("today_energy_kwh", self._name)
 
     @property
     def is_on(self):
         """Return true if switch is on. Standby is on."""
-        return self._is_on
+        return self.toon.getData("current_state", self._name)
 
     @property
     def available(self):
         """True if switch is available."""
-        return self._available
+        return self.toon.getData("is_connected", self._name)
 
 
     def turn_on(self, **kwargs):
@@ -79,3 +76,4 @@ class EnecoSmartPlug(SwitchDevice):
 
     def update(self):
         """Update state."""
+        self.toon.update()
