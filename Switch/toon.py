@@ -65,11 +65,11 @@ class EnecoSmartPlug(SwitchDevice):
 
     def turn_on(self, **kwargs):
         """Turn the switch on."""
-        pass
+        return self.smartplug.turn_on()
 
     def turn_off(self):
         """Turn the switch off."""
-        pass
+        return self.smartplug.turn_off()
 
     def update(self):
         """Update state."""

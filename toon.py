@@ -12,7 +12,7 @@ from homeassistant.helpers.discovery import load_platform
 import homeassistant.helpers.config_validation as cv
 
 # Home Assistant depends on 3rd party packages for API specific code.
-REQUIREMENTS = ['toonlib==0.1.4']
+REQUIREMENTS = ['toonlib==0.2.0']
 
 _LOGGER = logging.getLogger(__name__)
 
