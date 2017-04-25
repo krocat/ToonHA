@@ -16,8 +16,8 @@ REQUIREMENTS = ['toonlib==0.1.4']
 
 _LOGGER = logging.getLogger(__name__)
 
-DOMAIN = "toon"
-TOON_HANDLE = "toon_handle"
+DOMAIN = 'toon'
+TOON_HANDLE = 'toon_handle'
 
 # Validation of the user's configuration
 CONFIG_SCHEMA = vol.Schema({
@@ -30,7 +30,6 @@ CONFIG_SCHEMA = vol.Schema({
 
 def setup(hass, config):
     """Setup toon."""
-    plug = None
     hass.data[TOON_HANDLE] = ToonDataStore(config['toon']['username'],
                                            config['toon']['password'])
 
@@ -41,7 +40,7 @@ def setup(hass, config):
     load_platform(hass, 'sensor', DOMAIN)
 
     # Load Switch (for Slimme Stekkers)
-    if plug in hass.data[TOON_HANDLE].toon.smartplugs:
+    for plug in hass.data[TOON_HANDLE].toon.smartplugs:
         load_platform(hass, 'switch', DOMAIN)
 
     # Initialization successfull
@@ -60,31 +59,33 @@ class ToonDataStore:
 
         self.toon = toon
         self.data = {}
+        self.update()
 
     def update(self):
         """Update toon data."""
-        self.data["power_current"] = self.toon.power.value
-        self.data["power_today"] = round(
+        self.data['power_current'] = self.toon.power.value
+        self.data['power_today'] = round(
             (float(self.toon.power.daily_usage) +
              float(self.toon.power.daily_usage_low)) / 1000, 2)
-        self.data["temp"] = self.toon.temperature
+        self.data['temp'] = self.toon.temperature
 
         if self.toon.thermostat_state:
-            self.data["state"] = self.toon.thermostat_state.name
+            self.data['state'] = self.toon.thermostat_state.name
         else:
-            self.data["state"] = "Manual"
+            self.data['state'] = 'Manual'
 
-        self.data["setpoint"] = float(
+        self.data['setpoint'] = float(
             self.toon.thermostat_info.current_set_point) / 100
-        self.data["gas_current"] = self.toon.gas.value
-        self.data["gas_today"] = round(float(self.toon.gas.daily_usage) /
+        self.data['gas_current'] = self.toon.gas.value
+        self.data['gas_today'] = round(float(self.toon.gas.daily_usage) /
                                        1000, 2)
 
         for plug in self.toon.smartplugs:
-            self.data[plug.name]["current_power"] = plug.current_usage
-            self.data[plug.name]["daily_usage"] = plug.daily_usage
-            self.data[plug.name]["current_state"] = plug.current_state
-            self.data[plug.name]["is_connected"] = plug.is_connected
+            self.data[plug.name] = {'current_power': plug.current_usage,
+                                    'today_energy': round(
+                                        float(plug.daily_usage) / 1000, 2),
+                                    'current_state': plug.current_state,
+                                    'is_connected': plug.is_connected}
 
     def set_state(self, state):
         self.toon.thermostat_state = state
@@ -94,16 +95,13 @@ class ToonDataStore:
         self.toon.thermostat = temp
         self.update()
 
-    def get_data(self, data_id, plug=""):
+    def get_data(self, data_id, plug_name=None):
         """Get the cached data."""
         data = {'error': 'no data'}
-
-        if plug:
-            smartplug = self.toon.get_smartplug_by_name(plug)
-            if data_id in self.data[smartplug.name]:
-                data = self.data[smartplug.name][data_id]
+        if plug_name:
+            if data_id in self.data[plug_name]:
+                data = self.data[plug_name][data_id]
         else:
             if data_id in self.data:
                 data = self.data[data_id]
-
         return data
