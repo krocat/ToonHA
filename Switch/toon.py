@@ -61,7 +61,7 @@ class EnecoSmartPlug(SwitchDevice):
     @property
     def available(self):
         """True if switch is available."""
-        return self.toon_data_store.get_data('is_connected', self.name)
+        return self.smartplug.can_toggle
 
     def turn_on(self, **kwargs):
         """Turn the switch on."""
