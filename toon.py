@@ -12,7 +12,7 @@ from homeassistant.helpers.discovery import load_platform
 import homeassistant.helpers.config_validation as cv
 
 # Home Assistant depends on 3rd party packages for API specific code.
-REQUIREMENTS = ['toonlib==0.3.0']
+REQUIREMENTS = ['toonlib==0.4.0']
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -86,6 +86,16 @@ class ToonDataStore:
                                         float(plug.daily_usage) / 1000, 2),
                                     'current_state': plug.current_state,
                                     'is_connected': plug.is_connected}
+        self.data['solar_maximum'] = self.toon.solar.maximum
+        self.data['solar_produced'] = self.toon.solar.produced
+        self.data['solar_value'] = self.toon.solar.value
+        self.data['solar_average_produced'] = self.toon.solar.average_produced
+        self.data['solar_meter_reading_low_produced'] = \
+            self.toon.solar.meter_reading_low_produced
+        self.data['solar_meter_reading_produced'] = \
+            self.toon.solar.meter_reading_produced
+        self.data['solar_daily_cost_produced'] = \
+            self.toon.solar.daily_cost_produced
 
     def set_state(self, state):
         self.toon.thermostat_state = state
