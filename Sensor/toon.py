@@ -30,6 +30,16 @@ def setup_platform(hass, config, add_devices, discovery_info=None):
                          '{}_today_energy'.format(plug.name),
                          plug.name,
                          'kWh')])
+    if _toon_main.toon.solar.value:
+        add_devices([
+            SolarSensor(hass, 'Solar_maximum', 'kWh'),
+            SolarSensor(hass, 'Solar_produced', 'kWh'),
+            SolarSensor(hass, 'Solar_value', 'Watt'),
+            SolarSensor(hass, 'Solar_average_produced', 'kWh'),
+            SolarSensor(hass, 'Solar_meter_reading_low_produced', 'kWh'),
+            SolarSensor(hass, 'Solar_meter_reading_produced', 'kWh'),
+            SolarSensor(hass, 'Solar_daily_cost_produced', 'Euro')
+        ])
 
 
 class ToonSensor(Entity):
@@ -93,6 +103,41 @@ class FibaroSensor(Entity):
         """Return the state of the sensor."""
         value = '_'.join(self.name.lower().split('_')[1:])
         return self.toon.get_data(value, self._plug_name)
+
+    @property
+    def unit_of_measurement(self):
+        """Return the unit this state is expressed in."""
+        return self._unit_of_measurement
+
+    def update(self):
+        """Get the latest data from the sensor."""
+        self.toon.update()
+
+
+class SolarSensor(Entity):
+    """Representation of a sensor."""
+
+    def __init__(self, hass, name, unit_of_measurement):
+        """Initialize the sensor."""
+        self._name = name
+        self._state = None
+        self._unit_of_measurement = unit_of_measurement
+        self.toon = hass.data[toon_main.TOON_HANDLE]
+
+    @property
+    def should_poll(self):
+        """Polling required"""
+        return True
+
+    @property
+    def name(self):
+        """Return the name of the sensor."""
+        return self._name
+
+    @property
+    def state(self):
+        """Return the state of the sensor."""
+        return self.toon.get_data(self.name.lower())
 
     @property
     def unit_of_measurement(self):
