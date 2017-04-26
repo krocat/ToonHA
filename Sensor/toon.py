@@ -13,13 +13,19 @@ _LOGGER = logging.getLogger(__name__)
 
 def setup_platform(hass, config, add_devices, discovery_info=None):
     """Setup sensors."""
+    _toon_main = hass.data[toon_main.TOON_HANDLE]
+
     add_devices([
-        ToonSensor(hass, 'Gas_current', 'CM3'),
-        ToonSensor(hass, 'Gas_today', 'M3'),
         ToonSensor(hass, 'Power_current', 'Watt'),
         ToonSensor(hass, 'Power_today', 'kWh')
     ])
-    _toon_main = hass.data[toon_main.TOON_HANDLE]
+
+    if _toon_main.gas:
+        add_devices([
+            ToonSensor(hass, 'Gas_current', 'CM3'),
+            ToonSensor(hass, 'Gas_today', 'M3')
+        ])
+    
     for plug in _toon_main.toon.smartplugs:
         add_devices([
             FibaroSensor(hass,
@@ -30,7 +36,7 @@ def setup_platform(hass, config, add_devices, discovery_info=None):
                          '{}_today_energy'.format(plug.name),
                          plug.name,
                          'kWh')])
-    if _toon_main.toon.solar.value:
+    if _toon_main.toon.solar.value or _toon_main.solar:
         add_devices([
             SolarSensor(hass, 'Solar_maximum', 'kWh'),
             SolarSensor(hass, 'Solar_produced', 'kWh'),
@@ -40,6 +46,13 @@ def setup_platform(hass, config, add_devices, discovery_info=None):
             SolarSensor(hass, 'Solar_meter_reading_produced', 'kWh'),
             SolarSensor(hass, 'Solar_daily_cost_produced', 'Euro')
         ])
+
+    for smokedetector in _toon_main.toon.smokedetectors:
+        add_devices([
+            FibaroSmokeDetecor(hass,
+                         smokedetector.name,
+                         smokedetector.devUuid,
+                         '%')])
 
 
 class ToonSensor(Entity):
@@ -138,6 +151,41 @@ class SolarSensor(Entity):
     def state(self):
         """Return the state of the sensor."""
         return self.toon.get_data(self.name.lower())
+
+    @property
+    def unit_of_measurement(self):
+        """Return the unit this state is expressed in."""
+        return self._unit_of_measurement
+
+    def update(self):
+        """Get the latest data from the sensor."""
+        self.toon.update()
+
+    class FibaroSmokeDetector(Entity):
+    """Representation of a smoke detector."""
+
+    def __init__(self, hass, name, uid, unit_of_measurement):
+        """Initialize the sensor."""
+        self._name = name
+        self._uid = uid
+        self._state = None
+        self._unit_of_measurement = unit_of_measurement
+        self.toon = hass.data[toon_main.TOON_HANDLE]
+
+    @property
+    def should_poll(self):
+        """Polling required"""
+        return True
+
+    @property
+    def name(self):
+        """Return the name of the sensor."""
+        return self._name
+
+    @property
+    def state(self):
+        """Return the state of the sensor."""
+        return self.toon.get_data(self._name)
 
     @property
     def unit_of_measurement(self):
