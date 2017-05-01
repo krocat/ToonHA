@@ -55,9 +55,15 @@ def setup_platform(hass, config, add_devices, discovery_info=None):
     for smokedetector in _toon_main.toon.smokedetectors:
         add_devices([
             FibaroSmokeDetector(hass,
+<<<<<<< HEAD
                          '{}_smoke_detector'.format(smokedetector.name),
                          smokedetector.device_uuid,
                          '%')])
+=======
+                                smokedetector.name,
+                                smokedetector.device_uuid,
+                                '%')])
+>>>>>>> origin/SmokeDetectors
 
 
 class ToonSensor(Entity):
@@ -166,6 +172,10 @@ class SolarSensor(Entity):
         """Get the latest data from the sensor."""
         self.toon.update()
 
+<<<<<<< HEAD
+=======
+
+>>>>>>> origin/SmokeDetectors
 class FibaroSmokeDetector(Entity):
     """Representation of a smoke detector."""
 
