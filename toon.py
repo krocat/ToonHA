@@ -12,31 +12,49 @@ from homeassistant.helpers.discovery import load_platform
 import homeassistant.helpers.config_validation as cv
 
 # Home Assistant depends on 3rd party packages for API specific code.
-REQUIREMENTS = ['toonlib==0.4.0']
+REQUIREMENTS = ['toonlib==0.5.1']
 
 _LOGGER = logging.getLogger(__name__)
 
 DOMAIN = 'toon'
 TOON_HANDLE = 'toon_handle'
+CONF_GAS = 'gas'
+DEFAULT_GAS = True
+CONF_SOLAR = 'solar'
+DEFAULT_SOLAR = False
 
 # Validation of the user's configuration
 CONFIG_SCHEMA = vol.Schema({
     DOMAIN: vol.Schema({
         vol.Required(CONF_USERNAME): cv.string,
         vol.Required(CONF_PASSWORD): cv.string,
+        vol.Optional(CONF_GAS, default=DEFAULT_GAS): cv.boolean,
+        vol.Optional(CONF_SOLAR, default=DEFAULT_SOLAR): cv.boolean,
     }),
 }, extra=vol.ALLOW_EXTRA)
 
 
 def setup(hass, config):
     """Setup toon."""
+    if CONF_GAS in config['toon']:
+        gas = config['toon']['gas']
+    else:
+        gas = True
+    
+    if CONF_SOLAR in config['toon']:
+        solar = config['toon']['solar']
+    else:
+        solar = True
+
     hass.data[TOON_HANDLE] = ToonDataStore(config['toon']['username'],
-                                           config['toon']['password'])
+                                           config['toon']['password'],
+                                           gas,
+                                           solar)
 
     # Load Climate (for Thermostat)
     load_platform(hass, 'climate', DOMAIN)
 
-    # Load Sensor (for Gas and Power)
+    # Load Sensor (for Gas and Power, Solar and Smoke Detectors)
     load_platform(hass, 'sensor', DOMAIN)
 
     # Load Switch (for Slimme Stekkers)
@@ -50,7 +68,7 @@ def setup(hass, config):
 class ToonDataStore:
     """An object to store the toon data."""
 
-    def __init__(self, username, password):
+    def __init__(self, username, password, gas=DEFAULT_GAS, solar=DEFAULT_SOLAR):
         """Initialize toon."""
         from toonlib import Toon
 
@@ -58,7 +76,10 @@ class ToonDataStore:
         toon = Toon(username, password)
 
         self.toon = toon
+        self.gas = gas
+        self.solar = solar
         self.data = {}
+
         self.update()
 
     def update(self):
@@ -96,6 +117,12 @@ class ToonDataStore:
             self.toon.solar.meter_reading_produced
         self.data['solar_daily_cost_produced'] = \
             self.toon.solar.daily_cost_produced
+        for sd in self.toon.smokedetectors:
+            value = '{}_smoke_detector'.format(sd.name)
+            self.data[value] = {'smoke_detector': sd.battery_level,
+                                'device_type': sd.device_type,
+                                'is_connected': sd.is_connected,
+                                'last_connected_change': sd.last_connected_change}
 
     def set_state(self, state):
         self.toon.thermostat_state = state
