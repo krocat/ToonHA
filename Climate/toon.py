@@ -4,8 +4,7 @@ This provides a component for the rebranded Quby thermostat as provided by
 Eneco.
 """
 
-from homeassistant.components.climate import (
-    ClimateDevice, ATTR_TEMPERATURE)
+from homeassistant.components.climate import (ClimateDevice, ATTR_TEMPERATURE)
 from homeassistant.const import TEMP_CELSIUS
 import custom_components.toon as toon_main
 

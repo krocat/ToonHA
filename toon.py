@@ -79,7 +79,6 @@ class ToonDataStore:
         self.gas = gas
         self.solar = solar
         self.data = {}
-
         self.update()
 
     def update(self):
@@ -117,8 +116,8 @@ class ToonDataStore:
             self.toon.solar.meter_reading_produced
         self.data['solar_daily_cost_produced'] = \
             self.toon.solar.daily_cost_produced
-        for sd in self.toon.smokedetectors:
-            self.data[sd.name] = sd.batteryLevel
+        for smokedetector in self.toon.smokedetectors:
+            self.data[smokedetector.name] = smokedetector.battery_level
 
     def set_state(self, state):
         self.toon.thermostat_state = state
