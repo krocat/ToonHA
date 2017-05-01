@@ -41,7 +41,7 @@ def setup_platform(hass, config, add_devices, discovery_info=None):
                          plug.name,
                          'kWh')])
 
-    if _toon_main.toon.solar.value or _toon_main.solar:
+    if _toon_main.toon.solar.produced or _toon_main.solar:
         add_devices([
             SolarSensor(hass, 'Solar_maximum', 'kWh'),
             SolarSensor(hass, 'Solar_produced', 'kWh'),
@@ -55,9 +55,9 @@ def setup_platform(hass, config, add_devices, discovery_info=None):
     for smokedetector in _toon_main.toon.smokedetectors:
         add_devices([
             FibaroSmokeDetector(hass,
-                         '{}_smoke_detector'.format(smokedetector.name),
-                         smokedetector.device_uuid,
-                         '%')])
+                                '{}_smoke_detector'.format(smokedetector.name),
+                                smokedetector.device_uuid,
+                                '%')])
 
 
 class ToonSensor(Entity):

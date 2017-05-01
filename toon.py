@@ -12,7 +12,7 @@ from homeassistant.helpers.discovery import load_platform
 import homeassistant.helpers.config_validation as cv
 
 # Home Assistant depends on 3rd party packages for API specific code.
-REQUIREMENTS = ['toonlib==0.5.0']
+REQUIREMENTS = ['toonlib==0.5.1']
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -118,11 +118,11 @@ class ToonDataStore:
         self.data['solar_daily_cost_produced'] = \
             self.toon.solar.daily_cost_produced
         for sd in self.toon.smokedetectors:
-            value = sd.name + '_smoke_detector'
+            value = '{}_smoke_detector'.format(sd.name)
             self.data[value] = {'smoke_detector': sd.battery_level,
-                                    'device_type': sd.device_type,
-                                    'is_connected': sd.is_connected,
-                                    'last_connected_change': sd.last_connected_change}
+                                'device_type': sd.device_type,
+                                'is_connected': sd.is_connected,
+                                'last_connected_change': sd.last_connected_change}
 
     def set_state(self, state):
         self.toon.thermostat_state = state
