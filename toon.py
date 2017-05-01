@@ -51,13 +51,13 @@ def setup(hass, config):
                                            gas,
                                            solar)
 
-    # Load Climate (for Thermostat)
+    # Load climate (for Thermostat)
     load_platform(hass, 'climate', DOMAIN)
 
-    # Load Sensor (for Gas and Power, Solar and Smoke Detectors)
+    # Load sensor (for Gas and Power, Solar and Smoke Detectors)
     load_platform(hass, 'sensor', DOMAIN)
 
-    # Load Switch (for Slimme Stekkers)
+    # Load switch (for Slimme Stekkers)
     for plug in hass.data[TOON_HANDLE].toon.smartplugs:
         load_platform(hass, 'switch', DOMAIN)
 
