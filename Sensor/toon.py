@@ -7,8 +7,12 @@ import logging
 
 from homeassistant.helpers.entity import Entity
 import custom_components.toon as toon_main
+import datetime as datetime
 
 _LOGGER = logging.getLogger(__name__)
+
+STATE_ATTR_DEVICE_TYPE = "device_type"
+STATE_ATTR_LAST_CONNECTED_CHANGE = "last_connected_change"
 
 
 def setup_platform(hass, config, add_devices, discovery_info=None):
@@ -36,6 +40,7 @@ def setup_platform(hass, config, add_devices, discovery_info=None):
                          '{}_today_energy'.format(plug.name),
                          plug.name,
                          'kWh')])
+
     if _toon_main.toon.solar.value or _toon_main.solar:
         add_devices([
             SolarSensor(hass, 'Solar_maximum', 'kWh'),
@@ -49,9 +54,9 @@ def setup_platform(hass, config, add_devices, discovery_info=None):
 
     for smokedetector in _toon_main.toon.smokedetectors:
         add_devices([
-            FibaroSmokeDetecor(hass,
-                         smokedetector.name,
-                         smokedetector.devUuid,
+            FibaroSmokeDetector(hass,
+                         '{}_smoke_detector'.format(smokedetector.name),
+                         smokedetector.device_uuid,
                          '%')])
 
 
@@ -161,7 +166,7 @@ class SolarSensor(Entity):
         """Get the latest data from the sensor."""
         self.toon.update()
 
-    class FibaroSmokeDetector(Entity):
+class FibaroSmokeDetector(Entity):
     """Representation of a smoke detector."""
 
     def __init__(self, hass, name, uid, unit_of_measurement):
@@ -183,9 +188,22 @@ class SolarSensor(Entity):
         return self._name
 
     @property
+    def state_attributes(self):
+        """Return the state attributes of the smoke detectors."""
+        value = datetime.datetime.fromtimestamp(
+                    int(self.toon.get_data('last_connected_change', self.name))
+                ).strftime('%Y-%m-%d %H:%M:%S')
+
+        return {
+            STATE_ATTR_DEVICE_TYPE: self.toon.get_data('device_type', self.name),
+            STATE_ATTR_LAST_CONNECTED_CHANGE: value   
+        }
+
+    @property
     def state(self):
         """Return the state of the sensor."""
-        return self.toon.get_data(self._name)
+        value = '_'.join(self.name.lower().split('_')[1:])
+        return self.toon.get_data(value, self.name)
 
     @property
     def unit_of_measurement(self):

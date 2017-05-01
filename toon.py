@@ -54,7 +54,7 @@ def setup(hass, config):
     # Load Climate (for Thermostat)
     load_platform(hass, 'climate', DOMAIN)
 
-    # Load Sensor (for Gas and Power)
+    # Load Sensor (for Gas and Power, Solar and Smoke Detectors)
     load_platform(hass, 'sensor', DOMAIN)
 
     # Load Switch (for Slimme Stekkers)
@@ -118,7 +118,11 @@ class ToonDataStore:
         self.data['solar_daily_cost_produced'] = \
             self.toon.solar.daily_cost_produced
         for sd in self.toon.smokedetectors:
-            self.data[sd.name] = sd.batteryLevel
+            value = sd.name + '_smoke_detector'
+            self.data[value] = {'smoke_detector': sd.battery_level,
+                                    'device_type': sd.device_type,
+                                    'is_connected': sd.is_connected,
+                                    'last_connected_change': sd.last_connected_change}
 
     def set_state(self, state):
         self.toon.thermostat_state = state
