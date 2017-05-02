@@ -5,9 +5,6 @@ Support for Eneco Slimmer stekkers (Smart Plugs).
 import logging
 
 from homeassistant.components.switch import SwitchDevice
-# from homeassistant.const import (
-#     STATE_OFF, STATE_ON, STATE_STANDBY, STATE_UNKNOWN)
-# from homeassistant.loader import get_component
 import custom_components.toon as toon_main
 
 _LOGGER = logging.getLogger(__name__)

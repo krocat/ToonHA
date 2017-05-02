@@ -8,11 +8,11 @@ from homeassistant.components.climate import (ClimateDevice, ATTR_TEMPERATURE)
 from homeassistant.const import TEMP_CELSIUS
 import custom_components.toon as toon_main
 
-STATE_COMFORT = "Comfort"
-STATE_HOME = "Home"
-STATE_AWAY = "Away"
-STATE_SLEEP = "Sleep"
-STATE_MANUAL = "Manual"
+STATE_COMFORT = 'Comfort'
+STATE_HOME = 'Home'
+STATE_AWAY = 'Away'
+STATE_SLEEP = 'Sleep'
+STATE_MANUAL = 'Manual'
 
 
 def setup_platform(hass, config, add_devices, discovery_info=None):
@@ -26,7 +26,7 @@ class ThermostatDevice(ClimateDevice):
 
     def __init__(self, hass):
         """Initialize the device."""
-        self._name = "Toon van Eneco"
+        self._name = 'Toon van Eneco'
         self.hass = hass
         self.thermos = hass.data[toon_main.TOON_HANDLE]
 
@@ -55,7 +55,7 @@ class ThermostatDevice(ClimateDevice):
     @property
     def current_operation(self):
         """Return current operation i.e. comfort, home, away."""
-        state = self.thermos.get_data("state")
+        state = self.thermos.get_data('state')
         return state
 
     @property
@@ -66,12 +66,12 @@ class ThermostatDevice(ClimateDevice):
     @property
     def current_temperature(self):
         """Return the current temperature."""
-        return self.thermos.get_data("temp")
+        return self.thermos.get_data('temp')
 
     @property
     def target_temperature(self):
         """Return the temperature we try to reach."""
-        return self.thermos.get_data("setpoint")
+        return self.thermos.get_data('setpoint')
 
     def set_temperature(self, **kwargs):
         """Change the setpoint of the thermostat."""
