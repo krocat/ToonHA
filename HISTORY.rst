@@ -31,3 +31,9 @@ History
 ----------------
 
 * Added support for smoke detectors
+
+
+0.6 (08-05-2017)
+----------------
+
+* Upgraded to toonlib 1.0.0 with improved API connectivity
