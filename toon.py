@@ -10,6 +10,7 @@ import voluptuous as vol
 from homeassistant.const import (CONF_USERNAME, CONF_PASSWORD)
 from homeassistant.helpers.discovery import load_platform
 import homeassistant.helpers.config_validation as cv
+from toonlib import InvalidCredentials
 
 # Home Assistant depends on 3rd party packages for API specific code.
 REQUIREMENTS = ['toonlib==1.0.0']
@@ -67,7 +68,10 @@ class ToonDataStore:
         from toonlib import Toon
 
         # Creating the class
-        toon = Toon(username, password)
+        try:
+            toon = Toon(username, password)
+        except InvalidCredentials:
+            return False
 
         self.toon = toon
         self.gas = gas
