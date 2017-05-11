@@ -10,7 +10,6 @@ import voluptuous as vol
 from homeassistant.const import (CONF_USERNAME, CONF_PASSWORD)
 from homeassistant.helpers.discovery import load_platform
 import homeassistant.helpers.config_validation as cv
-from toonlib import InvalidCredentials
 
 # Home Assistant depends on 3rd party packages for API specific code.
 REQUIREMENTS = ['toonlib==1.0.0']
@@ -37,6 +36,7 @@ CONFIG_SCHEMA = vol.Schema({
 
 def setup(hass, config):
     """Setup toon."""
+    from toonlib import InvalidCredentials
     gas = config['toon']['gas']
     solar = config['toon']['solar']
 
