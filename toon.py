@@ -39,11 +39,14 @@ def setup(hass, config):
     """Setup toon."""
     gas = config['toon']['gas']
     solar = config['toon']['solar']
-    
-    hass.data[TOON_HANDLE] = ToonDataStore(config['toon']['username'],
-                                           config['toon']['password'],
-                                           gas,
-                                           solar)
+
+    try:
+        hass.data[TOON_HANDLE] = ToonDataStore(config['toon']['username'],
+                                               config['toon']['password'],
+                                               gas,
+                                               solar)
+    except InvalidCredentials:
+        return False
 
     if hass.data[TOON_HANDLE]:
         # Load climate (for Thermostat)
@@ -68,10 +71,8 @@ class ToonDataStore:
         from toonlib import Toon
 
         # Creating the class
-        try:
-            toon = Toon(username, password)
-        except InvalidCredentials:
-            return False
+
+        toon = Toon(username, password)
 
         self.toon = toon
         self.gas = gas
