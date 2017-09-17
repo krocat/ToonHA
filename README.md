@@ -7,12 +7,13 @@ your Toon thermostat and sensors for power and gas consumption..
 Install the files
 ===
 
-On your Home Assistant instance, go to \<config directory\>/custom_components. Create a folder named
-climate and a folder named sensor, if they don't already exist. Now copy the files:
+On your Home Assistant instance, go to \<config directory\>/custom_components. Create folders named
+sensor, climate and switch, if they don't already exist. Now copy the files:
 ```
 toon.py ---> <config directory>/custom_components
-Sensor/toon.py ---> <config directory>/custom_components/sensor
-Climate/toon.py ---> <config directory>/custom_components/climate
+sensor/toon.py ---> <config directory>/custom_components/sensor
+climate/toon.py ---> <config directory>/custom_components/climate
+switch/toon.py ---> <config directory>/custom_components/switch
 ```
 Configuration
 ===
