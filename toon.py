@@ -49,6 +49,9 @@ def setup(hass, config):
         return False
 
     if hass.data[TOON_HANDLE]:
+        # Load binary_sensor (for Burner)
+        load_platform(hass, 'binary_sensor', DOMAIN)
+
         # Load climate (for Thermostat)
         load_platform(hass, 'climate', DOMAIN)
 
@@ -88,6 +91,7 @@ class ToonDataStore:
             (float(self.toon.power.daily_usage) +
              float(self.toon.power.daily_usage_low)) / 1000, 2)
         self.data['temp'] = self.toon.temperature
+        self.data['burner_info'] = self.toon.thermostat_info.burner_info
 
         if self.toon.thermostat_state:
             self.data['state'] = self.toon.thermostat_state.name
