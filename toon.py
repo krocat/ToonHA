@@ -12,7 +12,7 @@ from homeassistant.helpers.discovery import load_platform
 import homeassistant.helpers.config_validation as cv
 
 # Home Assistant depends on 3rd party packages for API specific code.
-REQUIREMENTS = ['toonlib==1.0.2']
+REQUIREMENTS = ['toonlib==1.1.0']
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -91,7 +91,7 @@ class ToonDataStore:
             (float(self.toon.power.daily_usage) +
              float(self.toon.power.daily_usage_low)) / 1000, 2)
         self.data['temp'] = self.toon.temperature
-        self.data['burner_info'] = self.toon.thermostat_info.burner_info
+        self.data['burner_on'] = self.toon.burner_on
 
         if self.toon.thermostat_state:
             self.data['state'] = self.toon.thermostat_state.name

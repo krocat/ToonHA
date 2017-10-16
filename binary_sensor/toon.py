@@ -38,7 +38,7 @@ class BurnerSensor(BinarySensorDevice):
     @property
     def is_on(self):
         """Return the status of the sensor."""
-        return True if self.toon.get_data("burner_info") == "1" else False
+        return self.toon.get_data("burner_on")
 
     @property
     def icon(self):
