@@ -8,13 +8,15 @@ Install the files
 ===
 
 On your Home Assistant instance, go to \<config directory\>/custom_components. Create folders named
-sensor, climate and switch, if they don't already exist. Now copy the files:
+binary_sensor, sensor, climate and switch, if they don't already exist. Now copy the files:
 ```
 toon.py ---> <config directory>/custom_components
-sensor/toon.py ---> <config directory>/custom_components/sensor
+binary_sensor/toon.py ---> <config directory>/custom_components/binary_sensor
 climate/toon.py ---> <config directory>/custom_components/climate
+sensor/toon.py ---> <config directory>/custom_components/sensor
 switch/toon.py ---> <config directory>/custom_components/switch
 ```
+
 Configuration
 ===
 
