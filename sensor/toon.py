@@ -42,16 +42,16 @@ def setup_platform(hass, config, add_devices, discovery_info=None):
 
     for plug in _toon_main.toon.smartplugs:
         sensor_items.extend([
-            FibaroSensor(hass,
-                         '{}_current_power'.format(plug.name),
-                         plug.name,
-                         'power-socket-eu',
-                         'Watt'),
-            FibaroSensor(hass,
-                         '{}_today_energy'.format(plug.name),
-                         plug.name,
-                         'power-socket-eu',
-                         'kWh')])
+            SmartPlug(hass,
+                      '{}_current_power'.format(plug.name),
+                      plug.name,
+                      'power-socket-eu',
+                      'Watt'),
+            SmartPlug(hass,
+                      '{}_today_energy'.format(plug.name),
+                      plug.name,
+                      'power-socket-eu',
+                      'kWh')])
 
     if _toon_main.toon.solar.produced or _toon_main.solar:
         sensor_items.extend([
@@ -66,11 +66,11 @@ def setup_platform(hass, config, add_devices, discovery_info=None):
 
     for smokedetector in _toon_main.toon.smokedetectors:
         sensor_items.append(
-            FibaroSmokeDetector(hass,
-                                '{}_smoke_detector'.format(smokedetector.name),
-                                smokedetector.device_uuid,
-                                'alarm-bell',
-                                '%'))
+            SmokeDetector(hass,
+                          '{}_smoke_detector'.format(smokedetector.name),
+                          smokedetector.device_uuid,
+                          'alarm-bell',
+                          '%'))
 
     add_devices(sensor_items)
 
@@ -116,7 +116,7 @@ class ToonSensor(Entity):
         self.thermos.update()
 
 
-class FibaroSensor(Entity):
+class SmartPlug(Entity):
     """Representation of a sensor."""
 
     def __init__(self, hass, name, plug_name, icon, unit_of_measurement):
@@ -200,7 +200,7 @@ class SolarSensor(Entity):
         self.toon.update()
 
 
-class FibaroSmokeDetector(Entity):
+class SmokeDetector(Entity):
     """Representation of a smoke detector."""
 
     def __init__(self, hass, name, uid, icon, unit_of_measurement):
