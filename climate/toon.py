@@ -1,24 +1,19 @@
 """
 Toon van Eneco Thermostat Support.
+
 This provides a component for the rebranded Quby thermostat as provided by
 Eneco.
 """
 
 from homeassistant.components.climate import (ClimateDevice,
                                               ATTR_TEMPERATURE,
+                                              STATE_PERFORMANCE,
                                               STATE_HEAT,
+                                              STATE_ECO,
                                               STATE_COOL)
-from homeassistant.const import (TEMP_CELSIUS,
-                                 STATE_HOME,
-                                 STATE_NOT_HOME,
-                                 STATE_UNKNOWN)
-import custom_components.toon as toon_main
+from homeassistant.const import TEMP_CELSIUS
 
-STATE_HEAT = 'Comfort'
-STATE_HOME = 'Home'
-STATE_NOT_HOME = 'Away'
-STATE_COOL = 'Sleep'
-STATE_UNKNOWN = 'Manual'
+import custom_components.toon as toon_main
 
 
 def setup_platform(hass, config, add_devices, discovery_info=None):
@@ -40,8 +35,10 @@ class ThermostatDevice(ClimateDevice):
         self._state = None
         self._temperature = None
         self._setpoint = None
-        self._operation_list = [STATE_HEAT, STATE_HOME, STATE_NOT_HOME,
-                                STATE_COOL, STATE_UNKNOWN]
+        self._operation_list = [STATE_PERFORMANCE,
+                                STATE_HEAT,
+                                STATE_ECO,
+                                STATE_COOL]
 
     @property
     def name(self):
@@ -85,8 +82,13 @@ class ThermostatDevice(ClimateDevice):
         self.thermos.set_temp(temp)
 
     def set_operation_mode(self, operation_mode):
-        """Set new operation mode."""
-        self.thermos.set_state(operation_mode)
+        """Set new operation mode as toonlib requires it."""
+        toonlib_values = {STATE_PERFORMANCE: 'Comfort',
+                          STATE_HEAT: 'Home',
+                          STATE_ECO: 'Away',
+                          STATE_COOL: 'Sleep'}
+
+        self.thermos.set_state(toonlib_values[operation_mode])
 
     def update(self):
         """Update local state."""

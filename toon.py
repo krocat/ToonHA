@@ -1,20 +1,25 @@
 """
 Toon van Eneco Support.
+
 This provides a component for the rebranded Quby thermostat as provided by
 Eneco.
 """
 import logging
+from datetime import datetime, timedelta
 import voluptuous as vol
 
 # Import the device class from the component that you want to support
 from homeassistant.const import (CONF_USERNAME, CONF_PASSWORD)
 from homeassistant.helpers.discovery import load_platform
 import homeassistant.helpers.config_validation as cv
+from homeassistant.util import Throttle
 
 # Home Assistant depends on 3rd party packages for API specific code.
 REQUIREMENTS = ['toonlib==1.1.2']
 
 _LOGGER = logging.getLogger(__name__)
+
+MIN_TIME_BETWEEN_UPDATES = timedelta(seconds=5)
 
 DOMAIN = 'toon'
 TOON_HANDLE = 'toon_handle'
@@ -48,18 +53,9 @@ def setup(hass, config):
     except InvalidCredentials:
         return False
 
-    if hass.data[TOON_HANDLE]:
-        # Load binary_sensor (for Burner)
-        load_platform(hass, 'binary_sensor', DOMAIN)
-
-        # Load climate (for Thermostat)
-        load_platform(hass, 'climate', DOMAIN)
-
-        # Load sensor (for Gas and Power, Solar and Smoke Detectors)
-        load_platform(hass, 'sensor', DOMAIN)
-
-        # Load switch (for Slimme Stekkers)
-        load_platform(hass, 'switch', DOMAIN)
+    # Load all platforms
+    for platform in ('binary_sensor', 'climate', 'sensor', 'switch'):
+        load_platform(hass, platform, DOMAIN, {}, config)
 
     # Initialization successfull
     return True
@@ -82,10 +78,14 @@ class ToonDataStore:
         self.solar = solar
         self.data = {}
 
+        self.last_update = datetime.min
         self.update()
 
+    @Throttle(MIN_TIME_BETWEEN_UPDATES)
     def update(self):
         """Update toon data."""
+        self.last_update = datetime.now()
+
         self.data['power_current'] = self.toon.power.value
         self.data['power_today'] = round(
             (float(self.toon.power.daily_usage) +
@@ -110,6 +110,7 @@ class ToonDataStore:
                                         float(plug.daily_usage) / 1000, 2),
                                     'current_state': plug.current_state,
                                     'is_connected': plug.is_connected}
+
         self.data['solar_maximum'] = self.toon.solar.maximum
         self.data['solar_produced'] = self.toon.solar.produced
         self.data['solar_value'] = self.toon.solar.value
@@ -120,21 +121,22 @@ class ToonDataStore:
             self.toon.solar.meter_reading_produced
         self.data['solar_daily_cost_produced'] = \
             self.toon.solar.daily_cost_produced
-        for sd in self.toon.smokedetectors:
-            value = '{}_smoke_detector'.format(sd.name)
-            self.data[value] = {'smoke_detector': sd.battery_level,
-                                'device_type': sd.device_type,
-                                'is_connected': sd.is_connected,
+
+        for detector in self.toon.smokedetectors:
+            value = '{}_smoke_detector'.format(detector.name)
+            self.data[value] = {'smoke_detector': detector.battery_level,
+                                'device_type': detector.device_type,
+                                'is_connected': detector.is_connected,
                                 'last_connected_change':
-                                sd.last_connected_change}
+                                detector.last_connected_change}
 
     def set_state(self, state):
+        """Push a new state to the Toon unit."""
         self.toon.thermostat_state = state
-        self.update()
 
     def set_temp(self, temp):
+        """Push a new temperature to the Toon unit."""
         self.toon.thermostat = temp
-        self.update()
 
     def get_data(self, data_id, plug_name=None):
         """Get the cached data."""

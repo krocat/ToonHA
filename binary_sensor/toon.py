@@ -1,6 +1,8 @@
 """
-Toon van Eneco burner status.
+Toon van Eneco burner binary sensor.
 
+This provides a sensor for water heater ("burner") activity. The burner can
+either be an actual gas burner or an electric heater.
 """
 import logging
 
@@ -32,7 +34,7 @@ class BurnerSensor(BinarySensorDevice):
 
     @property
     def name(self):
-        """Return the name of the blink sensor."""
+        """Return the name of the sensor."""
         return self._name
 
     @property
