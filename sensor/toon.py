@@ -8,7 +8,7 @@ import logging
 import datetime as datetime
 
 from homeassistant.helpers.entity import Entity
-import homeassistant.components.toon as toon_main
+import custom_components.toon as toon_main
 
 _LOGGER = logging.getLogger(__name__)
 

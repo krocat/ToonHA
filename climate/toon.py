@@ -13,7 +13,7 @@ from homeassistant.components.climate import (ClimateDevice,
                                               STATE_COOL)
 from homeassistant.const import TEMP_CELSIUS
 
-import homeassistant.components.toon as toon_main
+import custom_components.toon as toon_main
 
 
 def setup_platform(hass, config, add_devices, discovery_info=None):
