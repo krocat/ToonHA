@@ -1,7 +1,7 @@
 """
 Support for Eneco Slimmer stekkers (Smart Plugs).
 
-This provides controlls for the z-wave smart plugs Toon can control.
+This provides controls for the z-wave smart plugs Toon can control.
 """
 import logging
 
