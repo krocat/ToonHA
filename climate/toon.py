@@ -88,6 +88,9 @@ class ThermostatDevice(ClimateDevice):
                           STATE_ECO: 'Away',
                           STATE_COOL: 'Sleep'}
 
+        if not operation_mode in toonlib_values:
+            return
+
         self.thermos.set_state(toonlib_values[operation_mode])
 
     def update(self):
