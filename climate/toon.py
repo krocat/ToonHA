@@ -5,6 +5,7 @@ This provides a component for the rebranded Quby thermostat as provided by
 Eneco.
 """
 
+import logging
 from homeassistant.components.climate import (ClimateDevice,
                                               ATTR_TEMPERATURE,
                                               STATE_PERFORMANCE,
@@ -15,6 +16,8 @@ from homeassistant.const import TEMP_CELSIUS
 
 import custom_components.toon as toon_main
 
+
+_LOGGER = logging.getLogger(__name__)
 
 def setup_platform(hass, config, add_devices, discovery_info=None):
     """Setup thermostat."""
@@ -88,6 +91,10 @@ class ThermostatDevice(ClimateDevice):
                           STATE_ECO: 'Away',
                           STATE_COOL: 'Sleep'}
 
+        if not operation_mode in toonlib_values:
+            _LOGGER.critical('Unsupported operation mode "{}"'.format(operation_mode))
+            return
+          
         self.thermos.set_state(toonlib_values[operation_mode])
 
     def update(self):
