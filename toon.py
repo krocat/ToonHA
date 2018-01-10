@@ -15,7 +15,7 @@ import homeassistant.helpers.config_validation as cv
 from homeassistant.util import Throttle
 
 # Home Assistant depends on 3rd party packages for API specific code.
-REQUIREMENTS = ['toonapilib==0.1.1']
+REQUIREMENTS = ['toonapilib==1.0.0']
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -45,17 +45,24 @@ CONFIG_SCHEMA = vol.Schema({
 
 def setup(hass, config):
     """Setup toon."""
+    from toonapilib.toonapilibexceptions import (InvalidConsumerSecret,
+                                                 InvalidConsumerKey,
+                                                 InvalidCredentials)
     gas = config['toon']['gas']
     solar = config['toon']['solar']
 
     try:
         hass.data[TOON_HANDLE] = ToonDataStore(config['toon'][CONF_USERNAME],
                                                config['toon'][CONF_PASSWORD],
-											   config['toon'][CONF_KEY],
-											   config['toon'][CONF_SECRET],
+                                               config['toon'][CONF_KEY],
+                                               config['toon'][CONF_SECRET],
                                                gas,
                                                solar)
-    except ValueError:
+    except InvalidCredentials:
+        return False
+    except InvalidConsumerKey:
+        return False
+    except InvalidConsumerSecret:
         return False
 
     # Load all platforms
@@ -70,7 +77,7 @@ class ToonDataStore:
     """An object to store the toon data."""
 
     def __init__(self, username, password, consumer_key, consumer_secret,
-				 gas=DEFAULT_GAS, solar=DEFAULT_SOLAR):
+                 gas=DEFAULT_GAS, solar=DEFAULT_SOLAR):
         """Initialize toon."""
         from toonapilib import Toon
 
