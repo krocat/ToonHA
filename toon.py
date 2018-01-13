@@ -15,7 +15,7 @@ import homeassistant.helpers.config_validation as cv
 from homeassistant.util import Throttle
 
 # Home Assistant depends on 3rd party packages for API specific code.
-REQUIREMENTS = ['toonlib==1.1.2']
+REQUIREMENTS = ['toonapilib==1.0.0']
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -23,6 +23,8 @@ MIN_TIME_BETWEEN_UPDATES = timedelta(seconds=5)
 
 DOMAIN = 'toon'
 TOON_HANDLE = 'toon_handle'
+CONF_KEY = 'consumer_key'
+CONF_SECRET = 'consumer_secret'
 CONF_GAS = 'gas'
 DEFAULT_GAS = True
 CONF_SOLAR = 'solar'
@@ -33,6 +35,8 @@ CONFIG_SCHEMA = vol.Schema({
     DOMAIN: vol.Schema({
         vol.Required(CONF_USERNAME): cv.string,
         vol.Required(CONF_PASSWORD): cv.string,
+        vol.Required(CONF_KEY): cv.string,
+        vol.Required(CONF_SECRET): cv.string,
         vol.Optional(CONF_GAS, default=DEFAULT_GAS): cv.boolean,
         vol.Optional(CONF_SOLAR, default=DEFAULT_SOLAR): cv.boolean,
     }),
@@ -41,16 +45,24 @@ CONFIG_SCHEMA = vol.Schema({
 
 def setup(hass, config):
     """Setup toon."""
-    from toonlib import InvalidCredentials
+    from toonapilib.toonapilibexceptions import (InvalidConsumerSecret,
+                                                 InvalidConsumerKey,
+                                                 InvalidCredentials)
     gas = config['toon']['gas']
     solar = config['toon']['solar']
 
     try:
-        hass.data[TOON_HANDLE] = ToonDataStore(config['toon']['username'],
-                                               config['toon']['password'],
+        hass.data[TOON_HANDLE] = ToonDataStore(config['toon'][CONF_USERNAME],
+                                               config['toon'][CONF_PASSWORD],
+                                               config['toon'][CONF_KEY],
+                                               config['toon'][CONF_SECRET],
                                                gas,
                                                solar)
     except InvalidCredentials:
+        return False
+    except InvalidConsumerKey:
+        return False
+    except InvalidConsumerSecret:
         return False
 
     # Load all platforms
@@ -64,14 +76,13 @@ def setup(hass, config):
 class ToonDataStore:
     """An object to store the toon data."""
 
-    def __init__(self, username, password, gas=DEFAULT_GAS,
-                 solar=DEFAULT_SOLAR):
+    def __init__(self, username, password, consumer_key, consumer_secret,
+                 gas=DEFAULT_GAS, solar=DEFAULT_SOLAR):
         """Initialize toon."""
-        from toonlib import Toon
+        from toonapilib import Toon
 
         # Creating the class
-
-        toon = Toon(username, password)
+        toon = Toon(username, password, consumer_key, consumer_secret)
 
         self.toon = toon
         self.gas = gas
