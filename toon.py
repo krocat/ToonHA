@@ -58,11 +58,15 @@ def setup(hass, config):
                                                config['toon'][CONF_SECRET],
                                                gas,
                                                solar)
+
     except InvalidCredentials:
+        _LOGGER.warning("The credentials in your config are invalid")
         return False
     except InvalidConsumerKey:
+        _LOGGER.warning("Your customer key is invalid")
         return False
     except InvalidConsumerSecret:
+        _LOGGER.warning("Your customer secret is invalid")
         return False
 
     # Load all platforms
