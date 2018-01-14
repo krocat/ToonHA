@@ -22,6 +22,7 @@ import custom_components.toon as toon_main
 _LOGGER = logging.getLogger(__name__)
 SUPPORT_FLAGS = SUPPORT_TARGET_TEMPERATURE | SUPPORT_OPERATION_MODE
 
+
 def setup_platform(hass, config, add_devices, discovery_info=None):
     """Setup thermostat."""
     # Add toon
@@ -99,8 +100,9 @@ class ThermostatDevice(ClimateDevice):
                           STATE_ECO: 'Away',
                           STATE_COOL: 'Sleep'}
 
-        if not operation_mode in toonlib_values:
-            _LOGGER.critical('Unsupported operation mode "{}"'.format(operation_mode))
+        if operation_mode not in toonlib_values:
+            _LOGGER.critical('Unsupported operation mode '
+                             '"{}"'.format(operation_mode))
             return
           
         self.thermos.set_state(toonlib_values[operation_mode])

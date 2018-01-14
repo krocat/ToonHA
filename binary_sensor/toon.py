@@ -23,6 +23,7 @@ def setup_platform(hass, config, add_devices_callback, discovery_info=None):
 
     add_devices_callback(device, True)
 
+
 class BurnerSensor(BinarySensorDevice):
     """Representation of a sensor."""
     def __init__(self, hass):
