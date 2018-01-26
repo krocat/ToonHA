@@ -5,10 +5,9 @@ The toon component platform can be used to control your Toon thermostat. It uses
 Installation
 ===
 
-On your Home Assistant instance, go to \<config directory\>/custom_components. Create folders named binary_sensor, sensor, climate and switch, if they don't already exist. Now copy the files:
+On your Home Assistant instance, go to \<config directory\>/custom_components. Create folders named sensor, climate and switch, if they don't already exist. Now copy the files:
 ```
 toon.py ---> <config directory>/custom_components
-binary_sensor/toon.py ---> <config directory>/custom_components/binary_sensor
 climate/toon.py ---> <config directory>/custom_components/climate
 sensor/toon.py ---> <config directory>/custom_components/sensor
 switch/toon.py ---> <config directory>/custom_components/switch

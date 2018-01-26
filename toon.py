@@ -15,7 +15,7 @@ import homeassistant.helpers.config_validation as cv
 from homeassistant.util import Throttle
 
 # Home Assistant depends on 3rd party packages for API specific code.
-REQUIREMENTS = ['toonapilib==1.0.1']
+REQUIREMENTS = ['toonapilib==1.2.0']
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -70,7 +70,7 @@ def setup(hass, config):
         return False
 
     # Load all platforms
-    for platform in ('binary_sensor', 'climate', 'sensor', 'switch'):
+    for platform in ('climate', 'sensor', 'switch'):
         load_platform(hass, platform, DOMAIN, {}, config)
 
     # Initialization successfull
@@ -106,7 +106,7 @@ class ToonDataStore:
             (float(self.toon.power.daily_usage) +
              float(self.toon.power.daily_usage_low)) / 1000, 2)
         self.data['temp'] = self.toon.temperature
-        self.data['burner_on'] = self.toon.burner_on
+        self.data['burner_status'] = self.toon.burner_state
 
         if self.toon.thermostat_state:
             self.data['state'] = self.toon.thermostat_state.name

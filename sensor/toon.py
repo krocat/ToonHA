@@ -28,7 +28,8 @@ def setup_platform(hass, config, add_devices, discovery_info=None):
                          ToonSensor(hass,
                                     'Power_today',
                                     'power-plug',
-                                    'kWh')])
+                                    'kWh'),
+                         Burner(hass)])
 
     if _toon_main.gas:
         sensor_items.extend([ToonSensor(hass,
@@ -250,6 +251,40 @@ class SmokeDetector(Entity):
     def unit_of_measurement(self):
         """Return the unit this state is expressed in."""
         return self._unit_of_measurement
+
+    def update(self):
+        """Get the latest data from the sensor."""
+        self.toon.update()
+
+class Burner(Entity):
+    """Representation of a gas or electric burner."""
+
+    def __init__(self, hass):
+        """Initialize the sensor."""
+        self._name = "burner_status"
+        self._icon = "mdi:fire"
+        self.toon = hass.data[toon_main.TOON_HANDLE]
+
+    @property
+    def should_poll(self):
+        """Polling required."""
+        return True
+
+    @property
+    def name(self):
+        """Return the name of the sensor."""
+        return self._name
+
+    @property
+    def icon(self):
+        """Return the mdi icon of the sensor."""
+        return self._icon
+
+    @property
+    def state(self):
+        """Return the state of the sensor."""
+        return self.toon.get_data(self.name.lower())
+
 
     def update(self):
         """Get the latest data from the sensor."""
