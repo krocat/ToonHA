@@ -15,7 +15,7 @@ import homeassistant.helpers.config_validation as cv
 from homeassistant.util import Throttle
 
 # Home Assistant depends on 3rd party packages for API specific code.
-REQUIREMENTS = ['toonapilib==1.0.1']
+REQUIREMENTS = ['toonapilib==1.2.0']
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -70,7 +70,7 @@ def setup(hass, config):
         return False
 
     # Load all platforms
-    for platform in ('binary_sensor', 'climate', 'sensor', 'switch'):
+    for platform in ('climate', 'sensor', 'switch'):
         load_platform(hass, platform, DOMAIN, {}, config)
 
     # Initialization successfull
