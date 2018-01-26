@@ -106,7 +106,7 @@ class ToonDataStore:
             (float(self.toon.power.daily_usage) +
              float(self.toon.power.daily_usage_low)) / 1000, 2)
         self.data['temp'] = self.toon.temperature
-        self.data['burner_on'] = self.toon.burner_on
+        self.data['burner_status'] = self.toon.burner_state
 
         if self.toon.thermostat_state:
             self.data['state'] = self.toon.thermostat_state.name
