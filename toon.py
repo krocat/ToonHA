@@ -123,8 +123,7 @@ class ToonDataStore:
         self.data['gas_today'] = round(float(self.toon.gas.daily_usage) /
                                        1000, 2)
 
-        self.data['gas_meter_reading'] = float(self.toon.gas.meter_reading) /
-                                            1000.0
+        self.data['gas_meter_reading'] = float(self.toon.gas.meter_reading) / 1000.0
 
         for plug in self.toon.smartplugs:
             self.data[plug.name] = {'current_power': plug.current_usage,
