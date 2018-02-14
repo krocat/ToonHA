@@ -29,6 +29,14 @@ def setup_platform(hass, config, add_devices, discovery_info=None):
                                     'Power_today',
                                     'power-plug',
                                     'kWh'),
+                         ToonSensor(hass,
+                                    'Power_meter_reading',
+                                    'power-plug',
+                                    'kWh'),
+                         ToonSensor(hass,
+                                    'Power_meter_reading_low',
+                                    'power-plug',
+                                    'kWh'),
                          Burner(hass)])
 
     if _toon_main.gas:
@@ -36,6 +44,10 @@ def setup_platform(hass, config, add_devices, discovery_info=None):
                                         'Gas_current',
                                         'gas-cylinder',
                                         'CM3'),
+                             ToonSensor(hass,
+                                        'Gas_meter_reading',
+                                        'gas-cylinder',
+                                        'M3'),
                              ToonSensor(hass,
                                         'Gas_today',
                                         'gas-cylinder',
