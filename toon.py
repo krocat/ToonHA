@@ -105,6 +105,10 @@ class ToonDataStore:
         self.data['power_today'] = round(
             (float(self.toon.power.daily_usage) +
              float(self.toon.power.daily_usage_low)) / 1000, 2)
+
+        self.data['power_meter_reading'] = float(self.toon.power.meter_reading)/1000.0
+        self.data['power_meter_reading_low'] = float(self.toon.power.meter_reading_low)/1000.0
+
         self.data['temp'] = self.toon.temperature
         self.data['burner_status'] = self.toon.burner_state
 
@@ -118,6 +122,8 @@ class ToonDataStore:
         self.data['gas_current'] = self.toon.gas.value
         self.data['gas_today'] = round(float(self.toon.gas.daily_usage) /
                                        1000, 2)
+
+        self.data['gas_meter_reading'] = float(self.toon.gas.meter_reading) / 1000.0
 
         for plug in self.toon.smartplugs:
             self.data[plug.name] = {'current_power': plug.current_usage,
