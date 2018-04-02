@@ -36,7 +36,7 @@ CONF_TENANT = 'tenant'
 DEFAULT_TENANT = 'eneco'
 
 CONF_NAME = 'display_name'
-DEFAULT_NAME = None
+DEFAULT_NAME = ''
 
 # Validation of the user's configuration
 CONFIG_SCHEMA = vol.Schema({
@@ -95,6 +95,9 @@ class ToonDataStore:
                  name=DEFAULT_NAME):
         """Initialize toon."""
         from toonapilib import Toon
+
+        if name == '':
+            name = None
 
         # Creating the class
         toon = Toon(username,
