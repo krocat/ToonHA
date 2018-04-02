@@ -33,10 +33,14 @@ toon:
     password: YOUR_PASSWORD
     consumer_key: API_CONSUMER_KEY
     consumer_secret: API_CONSUMER_SECRET
+    tenant: eneco
+    display_name: eneco-XXX-XXXXX
 ```
 - **username** (*Required*): Username for Mijn Eneco.
 - **password** (*Required*): Password for Mijn Eneco.
 - **consumer_key** (*Required*): The consumer key of your Toon App.
 - **consumer_secret** (*Required*): The consumer secret of your Toon App.
+- **tenant** (*Optional*): The the tenant ID if your energy supplier, Eneco by default.
+- **display_name** (*Optional*): The display code/name of your Toon unit. Useful if you have multiple units in 1 account. You can find the code of your unit under "Your Toon" in the Toon app.
 
 Note that the `username` and `password` fields should contain your Mijn Eneco (Toon app) credentials and should not be confused with your Toon developer account details.
