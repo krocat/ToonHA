@@ -72,8 +72,8 @@ def setup_platform(hass, config, add_devices, discovery_info=None):
             SolarSensor(hass, 'Solar_produced', 'kWh'),
             SolarSensor(hass, 'Solar_value', 'Watt'),
             SolarSensor(hass, 'Solar_average_produced', 'kWh'),
-            SolarSensor(hass, 'Solar_meter_reading_low_produced', 'kWh'),
-            SolarSensor(hass, 'Solar_meter_reading_produced', 'kWh'),
+            SolarSensor(hass, 'Power_meter_reading_low_feed_in', 'kWh'),
+            SolarSensor(hass, 'Power_meter_reading_feed_in', 'kWh'),
             SolarSensor(hass, 'Solar_daily_cost_produced', 'Euro')
         ])
 
