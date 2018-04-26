@@ -155,12 +155,9 @@ class ToonDataStore:
         self.data['solar_produced'] = self.toon.solar.produced
         self.data['solar_value'] = self.toon.solar.value
         self.data['solar_average_produced'] = self.toon.solar.average_produced
-        self.data['solar_meter_reading_low_produced'] = \
-            self.toon.solar.meter_reading_low_produced
-        self.data['solar_meter_reading_produced'] = \
-            self.toon.solar.meter_reading_produced
-        self.data['solar_daily_cost_produced'] = \
-            self.toon.solar.daily_cost_produced
+        self.data['solar_meter_reading_low_produced'] = float(self.toon.solar.meter_reading_low_produced) / 1000.0
+        self.data['solar_meter_reading_produced'] = float(self.toon.solar.meter_reading_produced) / 1000.0
+        self.data['solar_daily_cost_produced'] = self.toon.solar.daily_cost_produced
 
         for detector in self.toon.smokedetectors:
             value = '{}_smoke_detector'.format(detector.name)
