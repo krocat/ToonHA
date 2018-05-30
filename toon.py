@@ -138,7 +138,6 @@ class ToonDataStore:
 
         self.data['setpoint'] = float(
             self.toon.thermostat_info.current_set_point) / 100
-        self.data['gas_current'] = self.toon.gas.value
         if self.toon.gas.value < 0:
             self.data['gas_current'] = 0
         else:
