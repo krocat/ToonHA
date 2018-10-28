@@ -103,7 +103,7 @@ class ThermostatDevice(ClimateDevice):
         toonlib_values = {STATE_AUTO: 'Comfort',
                           STATE_HEAT: 'Home',
                           STATE_ECO: 'Away',
-                          STATE_COOL: 'Sleep'}}
+                          STATE_COOL: 'Sleep'}
 
         if operation_mode not in toonlib_values:
             _LOGGER.critical('Unsupported operation mode '
