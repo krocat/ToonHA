@@ -100,10 +100,10 @@ class ThermostatDevice(ClimateDevice):
 
     def set_operation_mode(self, operation_mode):
         """Set new operation mode as toonlib requires it."""
-        toonlib_values = {STATE_AUTO: 'Home',
-                          STATE_HEAT: 'Comfort',
-                          STATE_ECO: 'Sleep',
-                          STATE_COOL: 'Away'}
+        toonlib_values = {STATE_AUTO: 'Comfort',
+                          STATE_HEAT: 'Home',
+                          STATE_ECO: 'Away',
+                          STATE_COOL: 'Sleep'}}
 
         if operation_mode not in toonlib_values:
             _LOGGER.critical('Unsupported operation mode '
