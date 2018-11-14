@@ -68,12 +68,12 @@ def setup_platform(hass, config, add_devices, discovery_info=None):
 
     if _toon_main.toon.solar.produced or _toon_main.solar:
         sensor_items.extend([
-            SolarSensor(hass, 'Solar_maximum', 'kWh'),
+            SolarSensor(hass, 'Solar_maximum', 'Watt'),
             SolarSensor(hass, 'Solar_produced', 'kWh'),
             SolarSensor(hass, 'Solar_value', 'Watt'),
             SolarSensor(hass, 'Solar_average_produced', 'kWh'),
-            SolarSensor(hass, 'Solar_meter_reading_low_produced', 'kWh'),
-            SolarSensor(hass, 'Solar_meter_reading_produced', 'kWh'),
+            SolarSensor(hass, 'Power_meter_reading_low_feed_in', 'kWh'),
+            SolarSensor(hass, 'Power_meter_reading_feed_in', 'kWh'),
             SolarSensor(hass, 'Solar_daily_cost_produced', 'Euro')
         ])
 
