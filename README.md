@@ -1,5 +1,5 @@
 # Changes in my fork
-added an icon in HA
+This is an update for the google assistant in HA
 
 # Toon Home Assistant component
 
