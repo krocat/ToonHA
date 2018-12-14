@@ -18,16 +18,15 @@ from homeassistant.const import TEMP_CELSIUS
 
 import custom_components.toon as toon_main
 
-
 _LOGGER = logging.getLogger(__name__)
 SUPPORT_FLAGS = SUPPORT_TARGET_TEMPERATURE | SUPPORT_OPERATION_MODE
 
 HA_TOON = {
-                  STATE_AUTO: 'Comfort',
-                  STATE_HEAT: 'Home',
-                  STATE_ECO: 'Away',
-                  STATE_COOL: 'Sleep'
-                 }
+            STATE_AUTO: 'Comfort',
+            STATE_HEAT: 'Home',
+            STATE_ECO: 'Away',
+            STATE_COOL: 'Sleep'
+           }
 
 TOON_HA = {value: key for key, value in HA_TOON.items()}
 
@@ -35,7 +34,6 @@ def setup_platform(hass, config, add_devices, discovery_info=None):
     """Setup thermostat."""
     # Add toon
     add_devices((ThermostatDevice(hass), ), True)
-
 
 class ThermostatDevice(ClimateDevice):
     """Interface class for the toon module and HA."""
@@ -104,10 +102,10 @@ class ThermostatDevice(ClimateDevice):
         """Set new operation mode as toonlib requires it."""
         
 
-   #     if operation_mode not in toonlib_values:
-   #         _LOGGER.critical('Unsupported operation mode '
-   #                          '"{}"'.format(operation_mode))
-   #         return
+        if operation_mode not in toonlib_values:
+            _LOGGER.critical('Unsupported operation mode '
+                            '"{}"'.format(operation_mode))
+            return
           
         self.thermos.set_state(HA_TOON[operation_mode])
 
