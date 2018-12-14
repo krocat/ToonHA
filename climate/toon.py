@@ -22,6 +22,14 @@ import custom_components.toon as toon_main
 _LOGGER = logging.getLogger(__name__)
 SUPPORT_FLAGS = SUPPORT_TARGET_TEMPERATURE | SUPPORT_OPERATION_MODE
 
+toonlib_values = {
+                  STATE_AUTO: 'Comfort',
+                  STATE_HEAT: 'Home',
+                  STATE_ECO: 'Away',
+                  STATE_COOL: 'Sleep'
+                 }
+
+TOON_HA = {value: key for key, value in HA_TOON.items()}
 
 def setup_platform(hass, config, add_devices, discovery_info=None):
     """Setup thermostat."""
@@ -75,8 +83,7 @@ class ThermostatDevice(ClimateDevice):
     @property
     def current_operation(self):
         """Return current operation i.e. comfort, home, away."""
-        state = self.thermos.get_data('state')
-        return state
+        return TOON_HA.get(self.thermos.get_data('state'))
 
     @property
     def operation_list(self):
@@ -100,17 +107,14 @@ class ThermostatDevice(ClimateDevice):
 
     def set_operation_mode(self, operation_mode):
         """Set new operation mode as toonlib requires it."""
-        toonlib_values = {STATE_AUTO: 'Comfort',
-                          STATE_HEAT: 'Home',
-                          STATE_ECO: 'Away',
-                          STATE_COOL: 'Sleep'}
+        
 
-        if operation_mode not in toonlib_values:
-            _LOGGER.critical('Unsupported operation mode '
-                             '"{}"'.format(operation_mode))
-            return
+   #     if operation_mode not in toonlib_values:
+   #         _LOGGER.critical('Unsupported operation mode '
+   #                          '"{}"'.format(operation_mode))
+   #         return
           
-        self.thermos.set_state(toonlib_values[operation_mode])
+        self.thermos.set_state(HA_TOON[operation_mode])
 
     def update(self):
         """Update local state."""
