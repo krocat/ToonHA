@@ -101,7 +101,7 @@ class ThermostatDevice(ClimateDevice):
     def set_operation_mode(self, operation_mode):
         """Set new operation mode as toonlib requires it."""
         
-        if operation_mode not in toonlib_values:
+        if operation_mode not in HA_TOON:
             _LOGGER.critical('Unsupported operation mode '
                              '"{}"'.format(operation_mode))
             return
