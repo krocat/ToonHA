@@ -1,6 +1,3 @@
-# Changes in my fork
-This is an update for the google assistant in HA
-
 # Toon Home Assistant component
 
 The toon component platform can be used to control your Toon thermostat. It uses the toonapilib library by Costas Tyfoxylos (https://github.com/costastf/toonapilib). This component adds a climate device for your Toon thermostat and sensors for power and gas consumption.
