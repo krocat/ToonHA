@@ -22,7 +22,7 @@ import custom_components.toon as toon_main
 _LOGGER = logging.getLogger(__name__)
 SUPPORT_FLAGS = SUPPORT_TARGET_TEMPERATURE | SUPPORT_OPERATION_MODE
 
-toonlib_values = {
+HA_TOON = {
                   STATE_AUTO: 'Comfort',
                   STATE_HEAT: 'Home',
                   STATE_ECO: 'Away',
