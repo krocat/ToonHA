@@ -71,11 +71,6 @@ class ThermostatDevice(ClimateDevice):
         return True
 
     @property
-    def entity_picture(self):
-        """Icon to use in the frontend."""
-        return '/local/toonicon.png'
-
-    @property
     def temperature_unit(self):
         """The unit of measurement used by the platform."""
         return TEMP_CELSIUS
