@@ -1,5 +1,6 @@
 # Changes in my fork
 added an icon in HA
+renamed climate entity
 
 # Toon Home Assistant component
 
