@@ -12,6 +12,7 @@ from homeassistant.components.climate import (ClimateDevice,
                                               STATE_HEAT,
                                               STATE_ECO,
                                               STATE_COOL,
+                                              STATE_DRY,
                                               SUPPORT_TARGET_TEMPERATURE,
                                               SUPPORT_OPERATION_MODE)
 from homeassistant.const import TEMP_CELSIUS
@@ -51,6 +52,7 @@ class ThermostatDevice(ClimateDevice):
         self._operation_list = [STATE_AUTO,
                                 STATE_HEAT,
                                 STATE_ECO,
+                                STATE_DRY,
                                 STATE_COOL]
 
     @property
@@ -76,7 +78,10 @@ class ThermostatDevice(ClimateDevice):
     @property
     def current_operation(self):
         """Return current operation i.e. comfort, home, away."""
-        return TOON_HA.get(self.thermos.get_data('state'))
+        if TOON_HA.get(self.thermos.get_data('state')) == None:
+            return STATE_DRY
+        else: 
+            return TOON_HA.get(self.thermos.get_data('state'))
 
     @property
     def operation_list(self):
