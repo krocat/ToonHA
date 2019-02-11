@@ -51,7 +51,19 @@ class ThermostatDevice(ClimateDevice):
     def supported_features(self):
         """Return the list of supported features."""
         return SUPPORT_FLAGS
+      
+    @property
+    def min_temp(self):
+        """Return the minimum temperature."""
+        return convert_temperature(13, TEMP_CELSIUS,
+                                   self.temperature_unit)
 
+    @property
+    def max_temp(self):
+        """Return the maximum temperature."""
+        return convert_temperature(25, TEMP_CELSIUS,
+                                   self.temperature_unit)
+      
     @property
     def name(self):
         """Name of this Thermostat."""
