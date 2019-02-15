@@ -55,14 +55,12 @@ class ThermostatDevice(ClimateDevice):
     @property
     def min_temp(self):
         """Return the minimum temperature."""
-        return convert_temperature(13, TEMP_CELSIUS,
-                                   self.temperature_unit)
+        return 13
 
     @property
     def max_temp(self):
         """Return the maximum temperature."""
-        return convert_temperature(25, TEMP_CELSIUS,
-                                   self.temperature_unit)
+        return 25
       
     @property
     def name(self):
