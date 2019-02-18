@@ -12,10 +12,10 @@ from homeassistant.components.climate import (ClimateDevice,
                                               STATE_HEAT,
                                               STATE_ECO,
                                               STATE_COOL,
-                                              STATE_DRY,
+                                              STATE_FAN_ONLY,
                                               SUPPORT_TARGET_TEMPERATURE,
                                               SUPPORT_OPERATION_MODE)
-from homeassistant.const import TEMP_CELSIUS
+from homeassistant.const import (TEMP_CELSIUS, STATE_OFF)
 
 import custom_components.toon as toon_main
 
@@ -23,11 +23,11 @@ _LOGGER = logging.getLogger(__name__)
 SUPPORT_FLAGS = SUPPORT_TARGET_TEMPERATURE | SUPPORT_OPERATION_MODE
 
 HA_TOON = {
-            STATE_AUTO: 'Comfort',
-            STATE_HEAT: 'Home',
-            STATE_ECO: 'Away',
-            STATE_COOL: 'Sleep'
-           }
+                  STATE_AUTO: 'Comfort',
+                  STATE_HEAT: 'Home',
+                  STATE_ECO: 'Away',
+                  STATE_COOL: 'Sleep'
+                 }
 
 TOON_HA = {value: key for key, value in HA_TOON.items()}
 
@@ -36,12 +36,13 @@ def setup_platform(hass, config, add_devices, discovery_info=None):
     # Add toon
     add_devices((ThermostatDevice(hass), ), True)
 
+
 class ThermostatDevice(ClimateDevice):
     """Interface class for the toon module and HA."""
 
     def __init__(self, hass):
         """Initialize the device."""
-        self._name = 'Toon van Eneco'
+        self._name = 'Toon'
         self.hass = hass
         self.thermos = hass.data[toon_main.TOON_HANDLE]
 
@@ -52,14 +53,25 @@ class ThermostatDevice(ClimateDevice):
         self._operation_list = [STATE_AUTO,
                                 STATE_HEAT,
                                 STATE_ECO,
-                                STATE_DRY,
-                                STATE_COOL]
+                                STATE_COOL,
+                                STATE_OFF,
+                                STATE_FAN_ONLY]
 
     @property
     def supported_features(self):
         """Return the list of supported features."""
         return SUPPORT_FLAGS
+        
+    @property
+    def min_temp(self):
+        """Return the minimum temperature."""
+        return 13
 
+    @property
+    def max_temp(self):
+        """Return the maximum temperature."""
+        return 23
+                                   
     @property
     def name(self):
         """Name of this Thermostat."""
@@ -71,6 +83,11 @@ class ThermostatDevice(ClimateDevice):
         return True
 
     @property
+    def entity_picture(self):
+        """Icon to use in the frontend."""
+        return '/local/toonicon.png'
+
+    @property
     def temperature_unit(self):
         """The unit of measurement used by the platform."""
         return TEMP_CELSIUS
@@ -79,7 +96,7 @@ class ThermostatDevice(ClimateDevice):
     def current_operation(self):
         """Return current operation i.e. comfort, home, away."""
         if TOON_HA.get(self.thermos.get_data('state')) == None:
-            return STATE_DRY
+            return STATE_OFF
         else: 
             return TOON_HA.get(self.thermos.get_data('state'))
 
@@ -91,7 +108,7 @@ class ThermostatDevice(ClimateDevice):
     @property
     def current_temperature(self):
         """Return the current temperature."""
-        return self.thermos.get_data('temp')
+        return self.thermos.get_data('toon_temperture')
 
     @property
     def target_temperature(self):
@@ -105,12 +122,6 @@ class ThermostatDevice(ClimateDevice):
 
     def set_operation_mode(self, operation_mode):
         """Set new operation mode as toonlib requires it."""
-        
-        if operation_mode not in HA_TOON:
-            _LOGGER.critical('Unsupported operation mode '
-                             '"{}"'.format(operation_mode))
-            return
-          
         self.thermos.set_state(HA_TOON[operation_mode])
 
     def update(self):
