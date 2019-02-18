@@ -36,13 +36,12 @@ def setup_platform(hass, config, add_devices, discovery_info=None):
     # Add toon
     add_devices((ThermostatDevice(hass), ), True)
 
-
 class ThermostatDevice(ClimateDevice):
     """Interface class for the toon module and HA."""
 
     def __init__(self, hass):
         """Initialize the device."""
-        self._name = 'Toon'
+        self._name = 'Toon van Eneco'
         self.hass = hass
         self.thermos = hass.data[toon_main.TOON_HANDLE]
 
@@ -61,16 +60,6 @@ class ThermostatDevice(ClimateDevice):
     def supported_features(self):
         """Return the list of supported features."""
         return SUPPORT_FLAGS
-        
-    @property
-    def min_temp(self):
-        """Return the minimum temperature."""
-        return 13
-
-    @property
-    def max_temp(self):
-        """Return the maximum temperature."""
-        return 23
                                    
     @property
     def name(self):
@@ -81,11 +70,6 @@ class ThermostatDevice(ClimateDevice):
     def should_poll(self):
         """Polling is required."""
         return True
-
-    @property
-    def entity_picture(self):
-        """Icon to use in the frontend."""
-        return '/local/toonicon.png'
 
     @property
     def temperature_unit(self):
@@ -108,7 +92,7 @@ class ThermostatDevice(ClimateDevice):
     @property
     def current_temperature(self):
         """Return the current temperature."""
-        return self.thermos.get_data('toon_temperture')
+        return self.thermos.get_data('temp')
 
     @property
     def target_temperature(self):
