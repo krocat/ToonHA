@@ -12,7 +12,6 @@ from homeassistant.components.climate import (ClimateDevice,
                                               STATE_HEAT,
                                               STATE_ECO,
                                               STATE_COOL,
-                                              STATE_FAN_ONLY,
                                               SUPPORT_TARGET_TEMPERATURE,
                                               SUPPORT_OPERATION_MODE)
 from homeassistant.const import (TEMP_CELSIUS, STATE_OFF)
@@ -53,8 +52,7 @@ class ThermostatDevice(ClimateDevice):
                                 STATE_HEAT,
                                 STATE_ECO,
                                 STATE_COOL,
-                                STATE_OFF,
-                                STATE_FAN_ONLY]
+                                STATE_OFF]
 
     @property
     def supported_features(self):
