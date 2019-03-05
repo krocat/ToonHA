@@ -15,7 +15,7 @@ import homeassistant.helpers.config_validation as cv
 from homeassistant.util import Throttle
 
 # Home Assistant depends on 3rd party packages for API specific code.
-REQUIREMENTS = ['toonapilib==3.0.1']
+REQUIREMENTS = ['toonapilib==3.1.0']
 
 _LOGGER = logging.getLogger(__name__)
 
