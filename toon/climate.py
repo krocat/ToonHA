@@ -6,15 +6,14 @@ Eneco.
 """
 
 import logging
-from homeassistant.components.climate import (ClimateDevice,
-                                              ATTR_TEMPERATURE,
-                                              STATE_AUTO,
+from homeassistant.components.climate.const import (STATE_AUTO,
                                               STATE_HEAT,
                                               STATE_ECO,
                                               STATE_COOL,
                                               SUPPORT_TARGET_TEMPERATURE,
                                               SUPPORT_OPERATION_MODE)
-from homeassistant.const import (TEMP_CELSIUS, STATE_OFF)
+from homeassistant.const import (TEMP_CELSIUS, STATE_OFF, ATTR_TEMPERATURE)
+from homeassistant.components.climate import ClimateDevice
 
 import custom_components.toon as toon_main
 
