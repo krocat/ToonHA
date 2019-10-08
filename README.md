@@ -1,6 +1,10 @@
 # Toon Home Assistant component
 The toon component platform can be used to control your Toon thermostat. It uses the toonapilib library by Costas Tyfoxylos (https://github.com/costastf/toonapilib). This component adds a climate device for your Toon thermostat and sensors for power and gas consumption.
 
+Note for for 0.96 or later
+===
+Becouse this version of Home Assistant has climate 1.0 this custom component does not work anymore. Home Assistant has an integration that uses the new [api.toon.eu](api.toon.eu) it can be found here [Toon](https://www.home-assistant.io/integrations/toon/)
+
 Installation only for 0.88 or later
 ===
 
